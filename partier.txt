@@ -1,0 +1,23 @@
+Arbeiderpartiet,28.0
+Fremskrittspartiet,23.8
+Høyre,14.6
+Sosialistisk Venstreparti,5.6
+Senterpartiet,5.6
+Rødt,5.3
+Miljøpartiet De Grønne,4.7
+Kristelig Folkeparti,4.2
+Venstre,3.7
+Pensjonistpartiet,0.8
+Norgesdemokratene,0.7
+Generasjonspartiet,0.7
+Industri- og Næringspartiet,0.6
+Konservativt,0.5
+Fred og Rettferdighet,0.3
+Partiet Sentrum,0.2
+Partiet DNI,0.2
+Velferd og Innovasjonspartiet,0.2
+Pasientfokus,0.1
+Redd Ullevål sykehus,0.1
+Ensomhetspartiet,0.0
+Norges Kommunistiske Parti,0.0
+aaa,aaa
