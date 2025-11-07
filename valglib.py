@@ -3,6 +3,26 @@ import json
 import os
 import re
 
+def last_partier():
+    """Laster inn og returnerer partiene fra partifilen."""
+    partier = []
+    with open("partier.txt") as partier_fil:
+        for parti in partier_fil.read().splitlines():
+            try:
+                if '"' in parti:
+                    print("Ikke bruk anførselstegn, som i:", parti)
+                    exit(1)
+
+                partinavn = parti.split(",")[0]
+                partiandel = float(parti.split(",")[1])
+                partier.append((partinavn, partiandel))
+            except Exception as e:
+                print("Noe er galt med partier.txt:", e)
+                print("Dette partiet førte til feilen:", parti)
+                exit(1)
+
+    return partier
+
 def få_valgnavn():
     """Be brukeren om et valgnavn. Karakterer som ikke støttes på Windows eller
     som kan brukes for å traversere mapper er forbudt."""
