@@ -33,4 +33,4 @@ elif option == "2":
 
     valglib.stem_parti(valgnavn, valglib.last_partier())
 elif option == "3":
-    print("Uimplementert!")
+    valglib.simuler_valg(valglib.få_valgnavn(), valglib.last_partier(), int(input("Hvor mange skal stemme? ")))

@@ -3,9 +3,14 @@ import json
 import os
 import re
 
-def last_partier():
+# https://docs.python.org/3/library/typing.html
+type Parti = tuple[str, float]  
+type Partiliste = list[Parti]
+type Stemmer = dict[str, int]
+
+def last_partier() -> Partiliste:
     """Laster inn og returnerer partiene fra partifilen."""
-    partier = []
+    partier: Partiliste = []
     with open("partier.txt") as partier_fil:
         for parti in partier_fil.read().splitlines():
             try:
@@ -24,8 +29,8 @@ def last_partier():
     return partier
 
 def få_valgnavn():
-    """Be brukeren om et valgnavn. Karakterer som ikke støttes på Windows eller
-    som kan brukes for å traversere mapper er forbudt."""
+    """Ber brukeren om et valgnavn. Karakterer som ikke støttes på Windows eller
+    som kan brukes for å traversere mapper er forbudt. Returnerer valgnavnet."""
 
     valgnavn = input("Hva kaller du dette valget? ").lower()
     if re.match(r"[\./<>:\"\\|?*]", valgnavn):
@@ -33,8 +38,8 @@ def få_valgnavn():
         exit(1)
     return valgnavn
 
-def stem_parti(valgnavn, partier):
-    """Be brukeren stemme på et parti, også lagre stemmen."""
+def stem_parti(valgnavn: str, partier: Partiliste):
+    """Ber brukeren stemme på et parti, også lagrer stemmen i valget."""
     print(" ")
     partinavn = [x[0].lower() for x in partier]
     random.shuffle(partinavn)
@@ -48,17 +53,33 @@ def stem_parti(valgnavn, partier):
     # tja, det var snakk om en bruker som stemmer, så da blir det ikke anonymt
     lagre_stemmer({stem:1}, valgnavn)
 
-def lagre_stemmer(stemmer, valgnavn):
+def lagre_stemmer(stemmer: Stemmer, valgnavn: str):
     """Lagrer stemmen med å laste inn forrige stemmer fra en fil også skrive til den."""
     filbane = f"valgdata/{valgnavn}.json"
     
     if os.path.exists(filbane):
-        valgdata = json.load(open(filbane))
+        valgdata: Stemmer = json.load(open(filbane))
     else:
-        valgdata = {}
+        valgdata: Stemmer = {}
     
-    for parti, stemmer in stemmer.items():
-        valgdata[parti] = valgdata.get(parti,0) + stemmer
+    for parti, mengde in stemmer.items():
+        valgdata[parti] = valgdata.get(parti,0) + mengde
     
     json.dump(dict(sorted(valgdata.items())), open(filbane, "w"), ensure_ascii=False, indent=2)
     print("Lagret.")
+
+def simuler_valg(valgnavn: str, partier: Partiliste, mengde: int):
+    """Simulerer og lagrer et valg med prosentandelene i partilista."""
+    stemmer: Stemmer = {}
+
+    for _ in range(mengde):
+        seed = random.randint(1,1000) / 10
+        punkt = 0.00
+        for parti, andel in partier:
+            if andel+punkt < seed:
+                punkt += andel
+            else:
+                stemmer[parti] = stemmer.get(parti,0) + 1
+                break
+    
+    lagre_stemmer(stemmer, valgnavn)
