@@ -20,4 +20,3 @@ Pasientfokus,0.1
 Redd Ullevål sykehus,0.1
 Ensomhetspartiet,0.0
 Norges Kommunistiske Parti,0.0
-aaa,aaa
