@@ -1,17 +1,32 @@
 import random
 import json
+import glob
 import os
 import re
 
 # https://docs.python.org/3/library/typing.html
+type Valgliste = list[str]
 type Parti = tuple[str, float]  
 type Partiliste = list[Parti]
 type Stemmer = dict[str, int]
 
+hovedbane = os.path.dirname(os.path.abspath(__file__))
+valgdata_mappe = os.path.join(hovedbane, "valgdata")
+
+def last_valgliste() -> Valgliste:
+    if not os.path.isdir(valgdata_mappe):
+        if os.path.exists(valgdata_mappe):
+            print("Du har en fil som heter valgdata i prosjektmappen, slett den eller bytt navnet dens.")
+            exit(1)
+        else:
+            os.mkdir(valgdata_mappe)
+    
+    return [os.path.splitext(os.path.basename(vlg))[0] for vlg in glob.glob(os.path.join(valgdata_mappe, "*.json"))]
+
 def last_partier() -> Partiliste:
     """Laster inn og returnerer partiene fra partifilen."""
     partier: Partiliste = []
-    with open("partier.txt") as partier_fil:
+    with open(os.path.join(hovedbane, "partier.txt")) as partier_fil:
         for parti in partier_fil.read().splitlines():
             try:
                 if '"' in parti:
@@ -55,7 +70,7 @@ def stem_parti(valgnavn: str, partier: Partiliste):
 
 def lagre_stemmer(stemmer: Stemmer, valgnavn: str):
     """Lagrer stemmen med å laste inn forrige stemmer fra en fil også skrive til den."""
-    filbane = f"valgdata/{valgnavn}.json"
+    filbane = os.path.join(valgdata_mappe, f"{valgnavn}.json")
     
     if os.path.exists(filbane):
         valgdata: Stemmer = json.load(open(filbane))
@@ -79,7 +94,7 @@ def simuler_valg(valgnavn: str, partier: Partiliste, mengde: int):
             if andel+punkt < seed:
                 punkt += andel
             else:
-                stemmer[parti] = stemmer.get(parti,0) + 1
+                stemmer[parti.lower()] = stemmer.get(parti.lower(),0) + 1
                 break
     
     lagre_stemmer(stemmer, valgnavn)
